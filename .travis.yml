@@ -7,7 +7,7 @@ install:
 
 script:
     - chmod +x ./build-initrd.sh
-    - for i in armhf armel arm64 amd64 i386; do sudo ./build-initrd.sh -a -u $i; done
+    - for i in armhf armel arm64 amd64 i386; do sudo ./build-initrd.sh -u -a $i; done
 
 after_success:
     - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
