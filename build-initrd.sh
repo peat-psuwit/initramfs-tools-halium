@@ -5,12 +5,14 @@ set -e
 export FLASH_KERNEL_SKIP=1
 export DEBIAN_FRONTEND=noninteractive
 DEFAULTMIRROR="https://deb.debian.org/debian"
+APT_COMMAND="apt-get -y"
 
 usage() {
 	echo "Usage:
 
 -a|--arch	Architecture to create initrd for. Default armhf
 -m|--mirror	Custom mirror URL to use. Must serve your arch.
+-u|--untrusted	Run apt-get with the --allow-unauthenticated switch
 "
 }
 
@@ -30,6 +32,8 @@ while [ $# -gt 0 ]; do
 	-m | --mirror)
 		[ -n "$2" ] && MIRROR=$2 shift || usage
 		;;
+	-u | --untrusted)
+		APT_COMMAND="apt-get -y --allow-unauthenticated"
 	esac
 	shift
 done
@@ -112,11 +116,10 @@ if [ ! -e $ROOT/.min-done ]; then
 
 	# after the switch to systemd we now need to install upstart explicitly
 	echo "nameserver 8.8.8.8" >$ROOT/etc/resolv.conf
-	do_chroot $ROOT "apt-get -y update"
-	#do_chroot $ROOT "apt-get -y install upstart --no-install-recommends"
+	do_chroot $ROOT "$APT_COMMAND -y update"
 
 	# We also need to install dpkg-dev in order to use dpkg-architecture.
-	do_chroot $ROOT "apt-get -y install dpkg-dev --no-install-recommends"
+	do_chroot $ROOT "$APT_COMMAND install dpkg-dev --no-install-recommends"
 
 	# mv $ROOT/sbin/initctl $ROOT/sbin/initctl.REAL
 	# echo $INITCTL > $ROOT/sbin/initctl
@@ -128,9 +131,9 @@ else
 fi
 
 # install all packages we need to roll the generic initrd
-do_chroot $ROOT "apt-get -y update"
-do_chroot $ROOT "apt-get -y dist-upgrade"
-do_chroot $ROOT "apt-get -y install $INCHROOTPKGS --no-install-recommends"
+do_chroot $ROOT "$APT_COMMAND -y update"
+do_chroot $ROOT "$APT_COMMAND -y dist-upgrade"
+do_chroot $ROOT "$APT_COMMAND install $INCHROOTPKGS --no-install-recommends"
 DEB_HOST_MULTIARCH=$(chroot $ROOT dpkg-architecture -q DEB_HOST_MULTIARCH)
 
 cp -a conf/halium ${ROOT}/usr/share/initramfs-tools/conf.d

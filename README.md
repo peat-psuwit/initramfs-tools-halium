@@ -31,6 +31,12 @@ The initrd will be saved as `./out/initrd.img-touch-$ARCH` by default.
 
 `INCHROOTPACKAGES=` Packages to install in the chroot. These are installed in addition to the `minbase` packages specified by debootstrap. Default `initramfs-tools dctrl-tools e2fsprogs libc6-dev zlib1g-dev libssl-dev busybox-static`
 
+`-u|--untrusted` Runs `apt-get` with the `--allow-unauthenticated` switch. Use if you get the following error while building some initrd's:
+
+```
+E: There were unauthenticated packages and -y was used without --allow-unauthenticated
+```
+
 ## FAQ
 
 *I'm getting a strange error when I try to build*
