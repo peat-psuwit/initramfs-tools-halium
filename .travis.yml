@@ -3,13 +3,14 @@ sudo: required
 dist: xenial
 
 install:
-    - sudo bash -c "echo deb http://de.archive.ubuntu.com/ubuntu bionic main >> /etc/apt/sources.list"
+    - sudo bash -c "echo deb http://de.archive.ubuntu.com/ubuntu xenial main >> /etc/apt/sources.list"
+    - sudo bash -c "echo deb http://de.archive.ubuntu.com/ubuntu xenial universe >> /etc/apt/sources.list"
     - sudo apt-get update
     - sudo apt-get install qemu-user-static debootstrap -y
 
 script:
     - chmod +x ./build-initrd.sh
-    - for i in armhf armel arm64 amd64 i386; do sudo ./build-initrd.sh -u -a $i; done
+    - for i in arm64; do sudo ./build-initrd.sh -u -a $i; done
 
 after_success:
     - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
