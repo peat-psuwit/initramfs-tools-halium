@@ -14,7 +14,6 @@ jobs:
 
       - name: Initialize environment
         run: |
-          echo "deb http://de.archive.ubuntu.com/ubuntu bionic main universe" |sudo tee -a /etc/apt/sources.list
           sudo apt-get update
           sudo apt-get install qemu-user-static debootstrap -y
 
