@@ -71,7 +71,7 @@ if [ ! -e $ROOT/.min-done ]; then
 
 	# create a plain chroot to work in
 	echob "Creating chroot with arch $ARCH in $ROOT"
-	mkdir build || true
+	mkdir -p "$ROOT"
 	$BOOTSTRAP_BIN $RELEASE $ROOT $MIRROR || cat $ROOT/debootstrap/debootstrap.log
 
 	#sed -i 's/main$/main universe/' $ROOT/etc/apt/sources.list
